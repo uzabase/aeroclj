@@ -1,7 +1,8 @@
 (ns aeroclj.udf
   (:refer-clojure :exclude [get])
-  (:import (com.aerospike.client Language AerospikeClient Key Value)
-           (com.aerospike.client.task Task))
+  (:import [com.aerospike.client Language AerospikeClient Key Value]
+           [com.aerospike.client.task Task]
+           [com.aerospike.client.policy WritePolicy])
   (:require [aeroclj.core :as core]))
 
 (defn register-and-wait! [^AerospikeClient conn
@@ -12,5 +13,4 @@
 (defn execute! [^AerospikeClient conn
                 ^Key key ^String package-name ^String function-name
                 & args]
-  (.execute conn core/*wp* key package-name function-name (into-array Value args))
-  )
+  (.execute conn ^WritePolicy core/*wp* key package-name function-name (into-array Value args)))

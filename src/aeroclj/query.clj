@@ -21,21 +21,23 @@
                    ^String set ^String index-name]
   (.dropIndex conn core/*wp* ns set index-name))
 
-(defn mk-statement [{ns :ns set-name :set index :index bins :bins} & filters]
-  (let [stmt (Statement.)]
-    (when ns (.setNamespace stmt ns))
-    (when set-name (.setSetName stmt set-name))
-    (when index (.setIndexName stmt index))
-    (when bins (.setBinNames stmt bins))
-    (when filters (.setFilters stmt (into-array Filter filters)))
-    stmt)
-  )
+(defn mk-statement
+  ([{ns :ns set-name :set index :index bins :bins} filter]
+   (let [stmt (Statement.)]
+     (when ns (.setNamespace stmt ns))
+     (when set-name (.setSetName stmt set-name))
+     (when index (.setIndexName stmt index))
+     (when bins (.setBinNames stmt bins))
+     (when filter (.setFilter stmt ^Filter filter))
+     stmt))
+  ([statement-info]
+   (mk-statement statement-info nil)))
 
 
-(defn f-equal [name value]
+(defn f-equal [^String name ^String value]
   (Filter/equal name value))
 
-(defn f-range [name begin end]
+(defn f-range [^String name ^long begin ^long end]
   (Filter/range name begin end))
 
 

@@ -29,10 +29,10 @@
 (defn close! [^AerospikeClient conn]
   (.close conn))
 
-(defn mk-key [^String ns ^String set ^String key]
+(defn mk-key ^Key [^String ns ^String set ^String key]
   (Key. ns set key))
 
-(defn mk-bin [^String name value]
+(defn mk-bin ^Bin [^String name value]
   (Bin. ^String name value))
 
 (defn ->bin [^IPersistentMap bins]
@@ -95,10 +95,9 @@
   ([#^"[Lcom.aerospike.client.Key;" keys]
    (mget @conn-atom keys))
   ([^AerospikeClient conn keys]
-   (let [records (seq (.get conn *bp* keys))]
+   (let [records (seq (.get conn ^BatchPolicy *bp* keys))]
      (when records
-       (map #(.bins %) records))))
-  )
+       (map #(.bins ^Record %) records)))))
 
 (defn delete!
   ([key]
